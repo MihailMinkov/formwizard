@@ -204,7 +204,7 @@
 					return true;
 				}else{
 					this._disableNavigation();
-					this.element.ajaxSubmit(this.options.formOptions);
+          this.element.ajaxSubmit(this.options.formOptions);
 					return false;
 				}
 			}
@@ -289,16 +289,26 @@
 			if(links != undefined){
 				if(links.filter(":radio,:checkbox").size() > 0){
 					link = links.filter(this.options.linkClass + ":checked").val();
-				}else{
-					link = $(links).val();
+				}else {
+          link = $(links).data('link');
+          if (link == undefined) {
+  					link = $(links).val();
+          }
 				}
 			}
-			return link;
+      if (link != undefined) {
+			  link = link.replace(' ', '_');
+      }
+      return link
 		},
 
 		_navigate : function(step){
 			var link = this._getLink(step);
 			if(link != undefined){
+				if((link != "" && link != null && link != undefined) && this.steps.filter("#" + link).attr("id") != undefined){
+					return link;
+				}
+        link = this.steps.filter("#" + step).find(this.options.linkClass).data('link-default')
 				if((link != "" && link != null && link != undefined) && this.steps.filter("#" + link).attr("id") != undefined){
 					return link;
 				}
